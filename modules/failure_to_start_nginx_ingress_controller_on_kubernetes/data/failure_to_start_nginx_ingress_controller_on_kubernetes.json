@@ -1,0 +1,198 @@
+{
+  "name": "failure_to_start_nginx_ingress_controller_on_kubernetes",
+  "description": "This incident type refers to the failure of starting Nginx Ingress Controller on Kubernetes. The incident may be caused by various factors such as resource constraints on the node, affinity rules, image pull issues, misconfigured RBAC, missing default server TLS Secret, missing or invalid annotations, and invalid values of ConfigMap keys. Troubleshooting these possible reasons involves checking the ingress-controller logs and events to identify the exact cause of the startup issue.",
+  "params": [
+    {
+      "name": "MEMORY_REQUEST",
+      "value": ""
+    },
+    {
+      "name": "CPU_REQUEST",
+      "value": ""
+    },
+    {
+      "name": "CONFIGMAP_NAME",
+      "value": ""
+    },
+    {
+      "name": "INGRESS_CONTROLLER_POD_NAME",
+      "value": ""
+    },
+    {
+      "name": "INGRESS_CONTROLLER_DEPLOYMENT_NAME",
+      "value": ""
+    },
+    {
+      "name": "INGRESS_CONTROLLER_SERVICE_ACCOUNT_NAME",
+      "value": ""
+    },
+    {
+      "name": "NODE_NAME",
+      "value": ""
+    },
+    {
+      "name": "INGRESS_RESOURCE_NAME",
+      "value": ""
+    },
+    {
+      "name": "NAMESPACE",
+      "value": ""
+    },
+    {
+      "name": "K8S_CLUSTER_NAME",
+      "value": ""
+    }
+  ],
+  "cells": [
+    {
+      "name": "cell_1",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Failure to start Nginx Ingress Controller on Kubernetes.\nThis incident type refers to the failure of starting Nginx Ingress Controller on Kubernetes. The incident may be caused by various factors such as resource constraints on the node, affinity rules, image pull issues, misconfigured RBAC, missing default server TLS Secret, missing or invalid annotations, and invalid values of ConfigMap keys. Troubleshooting these possible reasons involves checking the ingress-controller logs and events to identify the exact cause of the startup issue."
+    },
+    {
+      "name": "cell_2",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## List all nodes in the cluster"
+    },
+    {
+      "name": "cell_3",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "pod | k8s_cluster_name=$K8S_CLUSTER_NAME | app='shoreline' | limit=1 | random=1 | `kubectl get nodes`"
+    },
+    {
+      "name": "cell_4",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Check the status of the node where the ingress-controller is scheduled to run"
+    },
+    {
+      "name": "cell_5",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "pod | k8s_cluster_name=$K8S_CLUSTER_NAME | app='shoreline' | limit=1 | random=1 | `kubectl describe node ${NODE_NAME}`"
+    },
+    {
+      "name": "cell_6",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## View the resource requests and limits for the ingress-controller pod"
+    },
+    {
+      "name": "cell_7",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "pod | k8s_cluster_name=$K8S_CLUSTER_NAME | app='shoreline' | limit=1 | random=1 | `kubectl describe pod ${INGRESS_CONTROLLER_POD_NAME}`"
+    },
+    {
+      "name": "cell_8",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Check the available resources on the node"
+    },
+    {
+      "name": "cell_9",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "pod | k8s_cluster_name=$K8S_CLUSTER_NAME | app='shoreline' | limit=1 | random=1 | `kubectl describe node ${NODE_NAME}`"
+    },
+    {
+      "name": "cell_10",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Check the affinity rules for the ingress-controller deployment"
+    },
+    {
+      "name": "cell_11",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "pod | k8s_cluster_name=$K8S_CLUSTER_NAME | app='shoreline' | limit=1 | random=1 | `kubectl describe deployment ${INGRESS_CONTROLLER_DEPLOYMENT_NAME}`"
+    },
+    {
+      "name": "cell_12",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Check the image pull status for the ingress-controller container"
+    },
+    {
+      "name": "cell_13",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "pod | k8s_cluster_name=$K8S_CLUSTER_NAME | app='shoreline' | limit=1 | random=1 | `kubectl describe pod ${INGRESS_CONTROLLER_POD_NAME}`"
+    },
+    {
+      "name": "cell_14",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Check the ingress-controller logs for any errors during startup"
+    },
+    {
+      "name": "cell_15",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "pod | k8s_cluster_name=$K8S_CLUSTER_NAME | app='shoreline' | limit=1 | random=1 | `kubectl logs ${INGRESS_CONTROLLER_POD_NAME}`"
+    },
+    {
+      "name": "cell_16",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Check the ingress-controller events for any errors during startup"
+    },
+    {
+      "name": "cell_17",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "pod | k8s_cluster_name=$K8S_CLUSTER_NAME | app='shoreline' | limit=1 | random=1 | `kubectl describe events ${INGRESS_CONTROLLER_POD_NAME}`"
+    },
+    {
+      "name": "cell_18",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Check the RBAC configuration for the ingress-controller service account"
+    },
+    {
+      "name": "cell_19",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "pod | k8s_cluster_name=$K8S_CLUSTER_NAME | app='shoreline' | limit=1 | random=1 | `kubectl describe serviceaccount -n ${NAMESPACE} ${INGRESS_CONTROLLER_SERVICE_ACCOUNT_NAME}`"
+    },
+    {
+      "name": "cell_20",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Check the annotations for the ingress resource"
+    },
+    {
+      "name": "cell_21",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "pod | k8s_cluster_name=$K8S_CLUSTER_NAME | app='shoreline' | limit=1 | random=1 | `kubectl describe ingress ${INGRESS_RESOURCE_NAME}`"
+    },
+    {
+      "name": "cell_22",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Check the values of the ConfigMap keys used by the ingress-controller"
+    },
+    {
+      "name": "cell_23",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "pod | k8s_cluster_name=$K8S_CLUSTER_NAME | app='shoreline' | limit=1 | random=1 | `kubectl describe configmap ${CONFIGMAP_NAME} -o yaml`"
+    },
+    {
+      "name": "cell_24",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Check if there are resource constraints on the node where the Nginx Ingress Controller is deployed. Move the deployment to a node with more resources."
+    },
+    {
+      "name": "cell_25",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "pod | k8s_cluster_name=$K8S_CLUSTER_NAME | app='shoreline' | random=1 | limit=1 | invoke_rescale_node_resources($MEMORY_REQUEST, $CPU_REQUEST, $INGRESS_CONTROLLER_DEPLOYMENT_NAME, $NODE_NAME)"
+    }
+  ]
+}
